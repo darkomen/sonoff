@@ -106,6 +106,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     p[length]=NULL;
     String message(p);
     Serial.println(message);
+    digitalWrite(RELAY_PIN, !digitalRead(RELAY_PIN));
 }
 
 void setup() {
@@ -230,9 +231,8 @@ void loop() {
       udp.print(messag);
       udp.endPacket();
 
-      hlw8012.resetEnergy();
       mqtt.publish("/hello", "world");
-      device["id"] = "sonoff-pow"
+      device["id"] = "sonoff-pow";
       measures["voltage"] = hlw8012.getVoltage();
       measures["current"] = hlw8012.getCurrent();
       measures["activepower"] = hlw8012.getActivePower();
@@ -241,6 +241,7 @@ void loop() {
       measures["energy"] = hlw8012.getEnergy();
       char answerJson[256];
       answer.printTo(answerJson, sizeof(answerJson));
-      mqtt.publish("/hello", answerJson);
+      mqtt.publish("/device/room/printer", answerJson);
+      hlw8012.resetEnergy();
   }
 }
